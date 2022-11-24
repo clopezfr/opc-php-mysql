@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  php_apache:
+    ports:
+      - 80:80
+    build: './build/php'
+    volumes:
+      - ./app:/var/www/html/
+    depends_on:
+      - mysql
+  mysql:
+    ports:
+      - 3306:3306
+    build: './build/mysql'
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: opc-php-mysql
+      MYSQL_USER: opc-php-mysql
+      MYSQL_PASSWORD: 12345
+    volumes:
+      - dbData:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+  phpmya:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: 12345
+      UPLOAD_LIMIT: 20M
+    ports:
+      - 8899:80
+volumes:
+  app:
+  dbData:
